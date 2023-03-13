@@ -1,3 +1,4 @@
 node_modules
 cooking.md
+config/default.js
 config/production.js

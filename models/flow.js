@@ -10,7 +10,6 @@ module.exports = {
         return Flow.remove(obj)
     },
     update: function update(obj) {
-        // return Flow.update({uid:92096174},{userId: 'a8fa0730af6b43d88524cc99aabd205d'})
         return Flow.findOneAndUpdate({ uuid: obj.uuid }, obj)
     },
     getListByPage: function getListByPage(query) {
@@ -37,16 +36,12 @@ module.exports = {
         const currentTime = new Date().getTime()
         const { bookId, startTime = currentTime - 86400000 * 7, endTime = currentTime, categoryType, categoryId } = query
 
-        const params = {
-            bookId,
-            bizTime: { $gte: parseInt(startTime), $lte: parseInt(endTime) }
-        }
         return Flow.aggregate(
             [
                 {
                     $match: {
                         bookId,
-                        bizTime: { $gte: startTime, $lte: endTime }
+                        bizTime: { $gte: parseInt(startTime), $lte: parseInt(endTime) }
                     },
                 },
                 {

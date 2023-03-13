@@ -18,5 +18,8 @@ module.exports = {
   },
   getUsersByIds: function getUsersByIds(ids) {
     return User.find({ userId: { $in: ids } }).exec()
+  },
+  updateUser: function updateUser({ id, name, avatar }) {
+    return User.findByIdAndUpdate(id, { name, avatar })
   }
 }

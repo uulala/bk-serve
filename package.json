@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "local": "supervisor index",
-    "test:prod": "cross-env NODE_ENV=production supervisor index",
+    "dev": "cross-env NODE_ENV=production supervisor index",
     "prod": "cross-env NODE_ENV=production supervisor index",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
