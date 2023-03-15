@@ -1,10 +1,7 @@
 module.exports = {
   checkLogin: function checkLogin(req, res, next) {
     if (!req.session.user) {
-      return res.send({
-        code: 0,
-        data: '未登录'
-      })
+      return res.send(401)
     }
     next()
   },
@@ -12,7 +9,7 @@ module.exports = {
   checkNotLogin: function checkNotLogin(req, res, next) {
     if (req.session.user) {
       return res.send({
-        code: 1,
+        code: 2,
         data: '已登录'
       })
     }
