@@ -30,4 +30,12 @@ router.get('/byType', checkLogin, function (req, res, next) {
     })
 })
 
+// 查看图片
+router.get('/img/:p', function (req, res, next) {
+    if(req.params.p.includes('..')){
+        return res.send(404)
+    }
+    res.sendFile(path.join(__dirname, `../../public/bk/${req.params.p}`))
+})
+
 module.exports = router

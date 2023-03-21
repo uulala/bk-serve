@@ -18,7 +18,7 @@ module.exports = {
             if(err){
                 res.send({code: 0, msg: '上传失败'})
             } else {
-                req.body.url = req.files[0].path
+                req.body.url = `upload/img/${req.files[0].filename}`
                 next()
             }
         })
