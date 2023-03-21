@@ -8,4 +8,5 @@ module.exports = function (app) {
     app.use('/flow', require('./flow'))
     app.use('/book', require('./book'))
     app.use('/category', require('./category'))
+    app.use('/upload', require('./csUpload'))
 }

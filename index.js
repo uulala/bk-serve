@@ -28,12 +28,6 @@ app.use(session({
   })
 }))
 
-// 处理表单及文件上传的中间件
-// app.use(require('express-formidable')({
-//   uploadDir: path.join(__dirname, 'public/img'), // 上传文件目录
-//   keepExtensions: true// 保留后缀
-// }))
-
 // 路由
 routes(app)
 
