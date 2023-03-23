@@ -47,7 +47,7 @@ router.post('/', checkNotLogin, function (req, res, next) {
 
 // 微信登录
 router.post('/wx', checkNotLogin, function (req, res, next) {
-  const { appid, secret } = config
+  const { appid, secret, baseUrl } = config
   https.get(`https://api.weixin.qq.com/sns/jscode2session?appid=${appid}&secret=${secret}&js_code=${req.body.code}&grant_type=authorization_code`, (rr) => {
     rr.on('data', (d) => {
       const openid = JSON.parse(d).openid
@@ -59,7 +59,7 @@ router.post('/wx', checkNotLogin, function (req, res, next) {
           UserModel.create({ openid, name: 'momo', password: openid }).then(user => {
             req.session.user = user
             // 初始化默认壁纸
-            CsUploadModel.insertMany([{ openid, category: 'bg', url: 'upload/img/public-1.jpg' }, { openid, category: 'bg', url: 'upload/img/public-2.jpg' }, { openid, category: 'bg', url: 'upload/img/public-3.jpg' }]).then(rr => {
+            CsUploadModel.insertMany([{ openid, category: 'bg', url: `${baseUrl}/upload/img/public-1.jpg` }, { openid, category: 'bg', url: `${baseUrl}/upload/img/public-2.jpg` }, { openid, category: 'bg', url: `${baseUrl}/upload/img/public-3.jpg` }]).then(rr => {
               res.send({ code: 1, msg: '注册成功', data: user })
             })
           })
