@@ -9,4 +9,5 @@ module.exports = function (app) {
     app.use('/book', require('./book'))
     app.use('/category', require('./category'))
     app.use('/upload', require('./csUpload'))
+    app.use('/over', require('./over'))
 }

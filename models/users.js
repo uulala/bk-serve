@@ -21,5 +21,8 @@ module.exports = {
   },
   updateUser: function updateUser({ id, name, avatar }) {
     return User.findByIdAndUpdate(id, { name, avatar })
+  },
+  del: function delUser(obj){
+    return User.remove(obj)
   }
 }
