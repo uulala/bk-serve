@@ -32,10 +32,23 @@ router.get('/byType', checkLogin, function (req, res, next) {
 
 // 查看图片
 router.get('/img/:p', function (req, res, next) {
-    if(req.params.p.includes('..')){
+    if (req.params.p.includes('..')) {
         return res.send(404)
     }
     res.sendFile(path.join(__dirname, `../../public/bk/${req.params.p}`))
 })
+
+// 删除图片
+router.post('/del', function (req, res, next) {
+    const { uuid } = req.body
+    const openid = req.session.user.openid
+
+    CsUploadModel.del({ uuid, openid }).then(result => {
+        res.send({ code: 1, msg: '删除成功' })
+    }).catch((e) => {
+        res.send({ code: 0, msg: '删除成功' })
+    })
+})
+
 
 module.exports = router

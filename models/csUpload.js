@@ -11,5 +11,8 @@ module.exports = {
     },
     getUrlByType: function getUrlByType(obj) {
         return CsUpload.find(obj)
+    },
+    insertMany: function insertMany(arr){
+        return CsUpload.insertMany(arr)
     }
 }

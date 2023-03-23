@@ -7,6 +7,7 @@ const config = require('config-lite')(__dirname)
 const UserModel = require('../models/users')
 const checkNotLogin = require('../middlewares/check').checkNotLogin
 const checkLogin = require('../middlewares/check').checkLogin
+const CsUploadModel = require('../models/csUpload')
 
 // POST /signin 用户登录
 router.post('/', checkNotLogin, function (req, res, next) {
@@ -58,7 +59,10 @@ router.post('/wx', checkNotLogin, function (req, res, next) {
           UserModel.create({ openid, name: 'momo', password: openid }).then(user => {
             console.log(user)
             req.session.user = user
-            res.send({ code: 1, msg: '注册成功', data: user })
+            // 初始化默认壁纸
+            CsUploadModel.insertMany([{ openid, category: 'bg', url: 'upload/img/public-1.jpg' }, { openid, category: 'bg', url: 'upload/img/public-2.jpg' }, { openid, category: 'bg', url: 'upload/img/public-3.jpg' }]).then(rr => {
+              res.send({ code: 1, msg: '注册成功', data: user })
+            })
           })
         }
       })
