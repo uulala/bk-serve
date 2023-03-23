@@ -14,7 +14,7 @@ router.post('/', checkLogin, uploadFile, function (req, res, next) {
     const openid = req.session.user.openid
     const { category, url } = req.body
     CsUploadModel.create({ openid, category, url }).then(result => {
-        res.send({ code: 1, msg: '添加成功' })
+    res.send({ code: 1, msg: '添加成功', data: { url } })
     }).catch((e) => {
         // 添加失败，异步删除上传的头像
         fs.unlink(path)

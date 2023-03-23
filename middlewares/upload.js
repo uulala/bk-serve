@@ -1,5 +1,6 @@
 const multer = require('multer')
 const path = require('path')
+const config = require('config-lite')(__dirname)
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -18,7 +19,7 @@ module.exports = {
             if(err){
                 res.send({code: 0, msg: '上传失败'})
             } else {
-                req.body.url = `upload/img/${req.files[0].filename}`
+                req.body.url = `${config.baseUrl}/upload/img/${req.files[0].filename}`
                 next()
             }
         })

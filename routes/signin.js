@@ -57,7 +57,6 @@ router.post('/wx', checkNotLogin, function (req, res, next) {
           res.send({ code: 1, msg: '登录成功', data: user })
         } else {
           UserModel.create({ openid, name: 'momo', password: openid }).then(user => {
-            console.log(user)
             req.session.user = user
             // 初始化默认壁纸
             CsUploadModel.insertMany([{ openid, category: 'bg', url: 'upload/img/public-1.jpg' }, { openid, category: 'bg', url: 'upload/img/public-2.jpg' }, { openid, category: 'bg', url: 'upload/img/public-3.jpg' }]).then(rr => {
@@ -94,8 +93,9 @@ router.post('/wx', checkNotLogin, function (req, res, next) {
 
 // 修改用户信息
 router.post('/update', checkLogin, function (req, res, next) {
-  const { _id, name, avatar } = req.body
-  UserModel.updateUser({ id: _id, name, avatar }).then(user => {
+  const { uuid } = req.session.user
+  const { name, avatar } = req.body
+  UserModel.updateUser({ uuid, name, avatar }).then(user => {
     console.log('res user:', user)
     res.send({ code: 1, msg: '修改成功', data: Object.assign(user, { name, avatar }) })
   })

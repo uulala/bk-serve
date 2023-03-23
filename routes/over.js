@@ -17,7 +17,6 @@ const UserModel = require('../models/users')
 
 // 删除自己的所有信息
 router.post('/delAll', checkLogin, function (req, res, next) {
-    console.log(req.session.user)
     const userId = req.session.user.uuid
     const openid = req.session.user.openid
 

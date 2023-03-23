@@ -19,8 +19,8 @@ module.exports = {
   getUsersByIds: function getUsersByIds(ids) {
     return User.find({ userId: { $in: ids } }).exec()
   },
-  updateUser: function updateUser({ id, name, avatar }) {
-    return User.findByIdAndUpdate(id, { name, avatar })
+  updateUser: function updateUser({ uuid, name, avatar }) {
+    return User.findOneAndUpdate(uuid, { name, avatar })
   },
   del: function delUser(obj){
     return User.remove(obj)
