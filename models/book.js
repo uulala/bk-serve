@@ -32,4 +32,11 @@ module.exports = {
 
         return Book.find({ ...query, bookMembers: { $elemMatch: { $eq: userId } } }).exec()
     },
+    createByPublic: function createByPublic(obj) {
+        return Book.find({ isPublic: 1 }).then(res => {
+            const one = res[0]
+
+            return Book.create({ publicBkUuid: one.uuid, categorys: one.categorys, ...obj })
+        })
+    }
 }

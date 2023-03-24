@@ -38,13 +38,15 @@ router.post('/create', checkLogin, function (req, res, next) {
 // 获取列表
 router.get('/list', checkLogin, function (req, res, next) {
 
-    FlowModel.getListByPage(req.query).then(function (result) {
-        const userIds = result.map(item => item.userId)
+    FlowModel.getListByPage(req.query).then(function (r1) {
+        const userIds = r1.map(item => item.userId)
         UserModel.getUsersByIds(userIds).then(function (rr) {
-            result.map(item => {
+            r1.map(item => {
                 item.userName = rr.find(it => it.uuid === item.userId)?.name
             })
-            res.send({ code: 1, data: result })
+            FlowModel.getCount(req.query).then(r2 => {
+                res.send({ code: 1, data: r1, count: r2 })
+            })
         })
     }).catch(function (e) {
         return res.send({ code: 0, msg: e.message })

@@ -8,6 +8,8 @@ const UserModel = require('../models/users')
 const checkNotLogin = require('../middlewares/check').checkNotLogin
 const checkLogin = require('../middlewares/check').checkLogin
 const CsUploadModel = require('../models/csUpload')
+const CategoryModel = require('../models/category')
+const BookModel = require('../models/book')
 
 // POST /signin 用户登录
 router.post('/', checkNotLogin, function (req, res, next) {
@@ -58,9 +60,18 @@ router.post('/wx', checkNotLogin, function (req, res, next) {
         } else {
           UserModel.create({ openid, name: 'momo', password: openid }).then(user => {
             req.session.user = user
-            // 初始化默认壁纸
-            CsUploadModel.insertMany([{ openid, category: 'bg', url: `${baseUrl}/upload/img/public-1.jpg` }, { openid, category: 'bg', url: `${baseUrl}/upload/img/public-2.jpg` }, { openid, category: 'bg', url: `${baseUrl}/upload/img/public-3.jpg` }]).then(rr => {
-              res.send({ code: 1, msg: '注册成功', data: user })
+            // 初始化账本
+            const obj = {
+              userId: user.uuid,
+              bookMembers: [user.uuid],
+              name: '日常账本',
+              img: `${baseUrl}/upload/img/public-book-3.jpg`
+            }
+            BookModel.createByPublic(obj).then(r1 => {
+              // 初始化默认壁纸
+              CsUploadModel.insertMany([{ openid, category: 'bg', url: `${baseUrl}/upload/img/public-1.jpg` }, { openid, category: 'bg', url: `${baseUrl}/upload/img/public-2.jpg` }, { openid, category: 'bg', url: `${baseUrl}/upload/img/public-3.jpg` }]).then(r2 => {
+                res.send({ code: 1, msg: '注册成功', data: user })
+              })
             })
           })
         }
@@ -96,10 +107,8 @@ router.post('/update', checkLogin, function (req, res, next) {
   const { uuid } = req.session.user
   const { name, avatar } = req.body
   UserModel.updateUser({ uuid, name, avatar }).then(user => {
-    console.log('res user:', user)
     res.send({ code: 1, msg: '修改成功', data: Object.assign(user, { name, avatar }) })
   })
-
 })
 
 // 绑定已有账户

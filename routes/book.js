@@ -2,12 +2,43 @@ const express = require('express')
 const router = express.Router()
 
 const BookModel = require('../models/book')
+const CategoryModel = require('../models/category')
 const checkLogin = require('../middlewares/check').checkLogin
 
 // 查询 book 
 router.get('/', checkLogin, function (req, res, next) {
-    BookModel.getObj({ uuid: req.query.uuid }).then(result => {
-        res.send({ code: 1, data: result })
+    const { isFirst, uuid } = req.query
+    let obj = {}
+    if (isFirst) {
+        obj.userId = req.session.user.uuid
+    } else {
+        obj.uuid = uuid
+    }
+    BookModel.getObj(obj).then(r1 => {
+        let one = isFirst ? r1[0] : r1
+        CategoryModel.getListByIds(one.categorys).then(r2 => {
+            const tempArr = [], tempObj = {}
+            r2.map(item => {
+                const { parentId } = item
+                if (!parentId) {
+                    tempArr.push(item)
+                } else {
+                    if (tempObj[parentId]) {
+                        tempObj[parentId].push(item)
+                    } else {
+                        tempObj[parentId] = [item]
+                    }
+                }
+            })
+            const keys = Object.keys(tempObj)
+            tempArr.map(item => {
+                if (keys.includes(item.uuid)) {
+                    item.sub = tempObj[item.uuid]
+                }
+            })
+            res.send({ code: 1, data: { book: one, categoryTree: tempArr } })
+        })
+
     })
 })
 

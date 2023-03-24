@@ -32,6 +32,25 @@ module.exports = {
         // .select({_id:0}) 不返回 _id
         return Flow.find(params).sort({ bizTime: -1 }).skip((currentPage - 1) * pageSize).limit(pageSize).select({ _id: 0 }).exec()
     },
+    getCount: function getCount(query) {
+        const { bookId, startTime, endTime, categoryType, categoryId, currentPage = 1, pageSize = 10 } = query
+
+        const params = {
+            bookId
+        }
+
+        if (startTime && endTime) {
+            params.bizTime = { $gte: parseInt(startTime), $lte: parseInt(endTime) }
+        }
+        if (categoryType) {
+            params.categoryType = categoryType
+        }
+        if (categoryId) {
+            params.categoryId = categoryId
+        }
+
+        return Flow.find(params).count()
+    },
     getTotal: function getTotal(query) {
         const currentTime = new Date().getTime()
         const { bookId, startTime = currentTime - 86400000 * 7, endTime = currentTime, categoryType, categoryId } = query
