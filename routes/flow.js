@@ -83,13 +83,15 @@ router.post('/del', checkLogin, function (req, res, next) {
 // 获取汇总数据
 router.get('/total', checkLogin, function (req, res, next) {
 
-    FlowModel.getTotal(req.query).then(function (result) {
-        res.send({ code: 1, data: result })
+    FlowModel.getTotal(req.query).then(function (r1) {
+        FlowModel.getCategorysTotal(req.query).then(r2 => {
+            res.send({ code: 1, data: { all: r1, categorys: r2 } })
+        })
     }).catch(function (e) {
         return res.send({ code: 0, msg: e.message })
         // next(e)
     })
-})
 
+})
 
 module.exports = router

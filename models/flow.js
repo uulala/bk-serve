@@ -71,5 +71,26 @@ module.exports = {
                 }
             ]
         )
+    },
+    getCategorysTotal: function getTotal(query) {
+        const currentTime = new Date().getTime()
+        const { bookId, startTime = currentTime - 86400000 * 7, endTime = currentTime, categoryType, categoryId } = query
+
+        return Flow.aggregate(
+            [
+                {
+                    $match: {
+                        bookId,
+                        bizTime: { $gte: parseInt(startTime), $lte: parseInt(endTime) }
+                    },
+                },
+                {
+                    $group: {
+                        "_id": "$categoryId",
+                        totalAmount: { $sum: '$amount' },
+                    },
+                }
+            ]
+        )
     }
 }
