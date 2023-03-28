@@ -94,4 +94,41 @@ router.get('/total', checkLogin, function (req, res, next) {
 
 })
 
+// 查看趋势
+router.get('/trand', checkLogin, function (req, res, next) {
+    FlowModel.getTrand({
+        ...req.query,
+        categoryType: 2
+    }).then(function (r1) {
+        FlowModel.getTrand({
+            ...req.query,
+            categoryType: 3
+        }).then(function (r2) {
+            // 补齐空白数据
+            const cc = []
+            r1.map(item => {
+                cc.push(item._id)
+            })
+            r2.map(item => {
+                cc.push(item._id)
+            })
+            const realCc = [...new Set(cc)]
+            const tempR1 = [], tempR2 = []
+
+            realCc.map(item => {
+                const one = r1.find(it => it._id === item)
+                const one2 = r2.find(it => it._id === item)
+                tempR1.push(one ? one.totalAmount : 0)
+                tempR2.push(one2 ? one2.totalAmount : 0)
+
+            })
+
+            res.send({ code: 1, data: { outcome: tempR2, income: tempR1, cc: realCc } })
+        })
+    }).catch(function (e) {
+        return res.send({ code: 0, msg: e.message })
+        // next(e)
+    })
+})
+
 module.exports = router

@@ -92,5 +92,27 @@ module.exports = {
                 }
             ]
         )
+    },
+    getTrand: function getTrand(query) {
+        const currentTime = new Date().getTime()
+        const { bookId, startTime = currentTime - 86400000 * 7, endTime = currentTime, categoryType, categoryId } = query
+
+        return Flow.aggregate(
+            [
+                {
+                    $match: {
+                        bookId,
+                        bizTime: { $gte: parseInt(startTime), $lte: parseInt(endTime) },
+                        categoryType
+                    },
+                },
+                {
+                    $group: {
+                        "_id": { $dateToString: { format: "%Y-%m-%d", date: { '$add': [new Date(0), "$bizTime", 28800000] } } },
+                        totalAmount: { $sum: '$amount' },
+                    },
+                }
+            ]
+        )
     }
 }
